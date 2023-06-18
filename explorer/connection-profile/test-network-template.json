@@ -1,0 +1,48 @@
+{
+	"name": "test-network",
+	"version": "1.0.0",
+	"client": {
+		"tlsEnable": true,
+		"adminCredential": {
+			"id": "admin",
+			"password": "adminpw"
+		},
+		"enableAuthentication": true,
+		"organization": "PatientMSP",
+		"connection": {
+			"timeout": {
+				"peer": {
+					"endorser": "300"
+				},
+				"orderer": "300"
+			}
+		}
+	},
+	"channels": {
+		"scm-channel": {
+			"peers": {
+				"peer0.patient.scm.com": {}
+			}
+		}
+	},
+	"organizations": {
+		"PatientMSP": {
+			"mspid": "PatientMSP",
+			"adminPrivateKey": {
+				"path": "/tmp/crypto/peerOrganizations/patient.scm.com/users/User1@patient.scm.com/msp/keystore/${KEY}"
+			},
+			"peers": ["peer0.patient.scm.com"],
+			"signedCert": {
+				"path": "/tmp/crypto/peerOrganizations/patient.scm.com/users/User1@patient.scm.com/msp/signcerts/cert.pem"
+			}
+		}
+	},
+	"peers": {
+		"peer0.patient.scm.com": {
+			"tlsCACerts": {
+				"path": "/tmp/crypto/peerOrganizations/patient.scm.com/peers/peer0.patient.scm.com/tls/ca.crt"
+			},
+			"url": "grpcs://peer0.patient.scm.com:7051"
+		}
+	}
+}

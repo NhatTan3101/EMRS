@@ -2,6 +2,7 @@ import { database } from "../databases/firebase.database.js";
 import ResponseError from "../models/response-error.model.js";
 import Response from "../models/response.model.js";
 import UserModel from "../models/user.model.js";
+import fabricAdmin from "../fabric/admin.fabric.js"
 
 export default class UserController {
   static async login(req, res) {
@@ -60,5 +61,20 @@ export default class UserController {
     const users = await model.findUsers(mabhyt);
 
     res.status(200).json(new Response(102, "error", { isSuccessfull: true, users }));
+  }
+
+
+  static async enrollAdmin(user, organization) {
+    // add database
+
+    // enroll to Fabric
+    await fabricAdmin.enrollAdmin(organization, "admin")
+  }
+
+  static async enrollUser(user, organization) {
+    // add database
+
+    // enroll to Fabric
+    await fabricAdmin.registerUser(organization, user.id)
   }
 }

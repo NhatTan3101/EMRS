@@ -30,7 +30,7 @@ pushd ../test-network-supply-chain
 popd
 
 cd web-app/servers/
-rm -rf identity
+rm -rf wallet
 
 # cd ../../
 # DOCKER_COMPOSE_FILE="docker-compose.yaml"

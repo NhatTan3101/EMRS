@@ -2,10 +2,7 @@ module github.com/hyperledger/CapstoneProject_102190232_TranTanPhat_SupplyChain/
 
 go 1.17
 
-require (
-	github.com/golang/protobuf v1.5.3
-	github.com/hyperledger/fabric-contract-api-go v1.2.1
-)
+require github.com/hyperledger/fabric-contract-api-go v1.2.1
 
 require (
 	github.com/go-openapi/jsonpointer v0.19.6 // indirect
@@ -15,6 +12,7 @@ require (
 	github.com/gobuffalo/envy v1.10.2 // indirect
 	github.com/gobuffalo/packd v1.0.2 // indirect
 	github.com/gobuffalo/packr v1.30.1 // indirect
+	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/hyperledger/fabric-chaincode-go v0.0.0-20230228194215-b84622ba6a7a // indirect
 	github.com/hyperledger/fabric-protos-go v0.3.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect

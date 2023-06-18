@@ -1,5 +1,6 @@
 import { database } from "../databases/firebase.database.js";
 import Response from "../models/response.model.js";
+import fabricDoctor from "../fabric/doctor.fabric.js";
 
 export default class MedicalRecordController {
   static async createRecord(req, res) {
@@ -54,4 +55,32 @@ export default class MedicalRecordController {
       }
     }
   }
+
+  static async create(data, identity) {
+    // add database
+
+    // hash data
+    const hash = "asdasugdasudga"
+    // add blockchain
+    const recordId = data.id
+    await fabricDoctor.createRecord(recordId, hash, identity)
+
+  }
+
+  static async update(data, identity) {
+    // add database
+
+    // hash data
+    const hash = "fj0j0ed90qjd9qw0j0q9"
+    // add blockchain
+    const recordId = data.id
+    await fabricDoctor.updateRecord(recordId, hash, identity)
+  }
+
+  static async get(recordId, identity) {
+    // get blockchain
+    const record = await fabricDoctor.getRecord(recordId, identity)
+    return record
+  }
+
 }   

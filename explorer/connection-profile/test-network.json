@@ -29,7 +29,7 @@
 		"PatientMSP": {
 			"mspid": "PatientMSP",
 			"adminPrivateKey": {
-				"path": "/tmp/crypto/peerOrganizations/patient.scm.com/users/User1@patient.scm.com/msp/keystore/d66e3bce86993399ca79a10d46577587bbc741ac6e72a868190186f2a4ec0de7_sk"
+				"path": "/tmp/crypto/peerOrganizations/patient.scm.com/users/User1@patient.scm.com/msp/keystore/7ccec4384f865585bcf424c487a0bbe45681f8633a5ca4d40ae7f823a886297e_sk"
 			},
 			"peers": ["peer0.patient.scm.com"],
 			"signedCert": {

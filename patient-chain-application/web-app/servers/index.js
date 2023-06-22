@@ -3,7 +3,6 @@ import userRouter from "./routes/user.routes.js";
 import medicalRecordRouter from "./routes/medical-record.routes.js";
 import { configLibraries } from "./configs/lib.config.js";
 import UserController from "./controllers/user.controller.js";
-import ReocordController from "./controllers/medical-record.controller.js";
 import { authenticate } from "./middlewares/authentication.middlewares.js";
 
 const app = express();
@@ -21,33 +20,6 @@ app.listen(PORT, () => {
 });
 
 // dang ky admin cho moi to chuc
-// phai co phan dang ki admin cho moi peer?
 // await UserController.enrollAdmin(null, "doctor");
 // await UserController.enrollAdmin(null, "patient");
-
-// dang ki tai khoan + add blockchain
-// lay id cua  userid fisebase de tao identity cho blockchain
-// await UserController.enrollUser(
-//     {
-//         id: "0323jf3j",
-//     },
-//     "doctor"
-// );
-
-// await UserController.register(
-//     {
-//         id: "240akfk",
-//     },
-//     "patient"
-// );
-
-// invoke (post) 
-
-// await ReocordController.create({id: "Record 1", name: "Benh Nhan"}, "0323jf3j")
-
-// await ReocordController.update({id: "Record 1", name: "Benh Nhan Moi"}, "0323jf3j")
-
-// query (get)
-
-// console.log(JSON.parse(await ReocordController.get("Record 1", "240akfk")).HashCode)
 

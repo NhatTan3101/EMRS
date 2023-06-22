@@ -13,7 +13,7 @@ export default class MedicalRecordController {
         treatment,
         doctor,
         emailDoctor,
-        createAt,
+        medicalExamDay,
         pill,
         quantity,
         timeperday,
@@ -28,22 +28,21 @@ export default class MedicalRecordController {
         treatment,
         doctor,
         emailDoctor,
-        createAt,
+        medicalExamDay,
         pill,
         quantity,
         timeperday,
         dayofsurgery,
       };
 
-      let data = await database.ref(`users/${userId}/records`).push(medicalRecord);
+      await database.ref(`users/${userId}/medical_record/exams`).push(medicalRecord);
       // hash data
       let hashcode = crypto.createHash("sha256").update(JSON.stringify(medicalRecord)).digest("sha256");
-      console.log("hashcode: ", hashcode);
-      // get recordId, identity:userId
+      // // get recordId, identity:userId
       let recordId = data.key;
-      let identity = "-NYJ-YLjXqYLjuLIj3_0";
-      // add blockchain
-      await fabricDoctor.createRecord(recordId, hashcode, identity)
+      let identity = req.locals.userId;
+      // // add blockchain
+      let dataBC = await fabricDoctor.createRecord(recordId, hashcode, identity);
 
       res.status(200).json(medicalRecord);
     } catch (error) {
@@ -53,15 +52,12 @@ export default class MedicalRecordController {
 
   static async getRecord(req, res) {
     let { userId } = req.params;
-    let data = await database.ref(`users/${userId}/records`).once("value");
-    let raws = data.val();
+    const raw = await database.ref(`users/${userId}/medical_records/exams`).once("value");
+    const data = raw.val();
     let records = [];
 
-    for (let key in raws) {
-      let raw = raws[key];
-      if (key) {
-        records.push({ ...raw, userId: key });
-      }
+    for (const key in data) {
+      if (data?.[key]) records.push(data?.[key]);
     }
     res
       .status(200)

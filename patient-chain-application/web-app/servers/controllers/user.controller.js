@@ -1,8 +1,8 @@
 import { createUser, database, signIn } from "../databases/firebase.database.js";
-import ResponseError from "../models/response-error.model.js";
 import Response from "../models/response.model.js";
 import UserModel from "../models/user.model.js";
-import fabricAdmin from "../fabric/admin.fabric.js"
+import fabricAdmin from "../fabric/admin.fabric.js";
+import { generateId } from "../utils/uuid.util.js";
 
 export default class UserController {
   static async login(req, res) {
@@ -39,6 +39,9 @@ export default class UserController {
         email,
         name,
         role,
+        medical_record: {
+          recordId: generateId(),
+        }
       };
 
       const data = await createUser(email, password);
@@ -46,17 +49,32 @@ export default class UserController {
       await database.ref("users").child(data.uid).update(user);
 
       res.status(200).json(new Response(102, "Successfully", { isSuccessfull: true }));
+
+      await fabricAdmin.enrollAdmin(user.role,  data.uid);
     } catch (error) {
-      res.status(500).json(new Response(102, "Internal server !", { isSuccessfull: true }));
+      res.status(500).json(new Response(102, error?.message || "Internal server !", { isSuccessfull: false }));
     }
   }
 
-  static async update(req, res) {
-    const { mabhyt } = req.body;
+  static async updatePatient(req, res) {
+    const { mabhyt, gender, idcardno, address, birthday, hometown, nation, phonenumber } = req.body;
     const { userId } = req.params;
 
     const user = {
-      mabhyt,
+      mabhyt, gender, idcardno, address, birthday, hometown, nation, phonenumber
+    };
+
+    await database.ref(`users/${userId}`).update(user);
+
+    res.status(200).json(new Response(102, "error", { isSuccessfull: true }))
+  };
+
+  static async updateDoctor(req, res) {
+    const { gender, address, hospital, department, phonenumber } = req.body;
+    const { userId } = req.params;
+
+    const user = {
+      gender, address, hospital, department, phonenumber
     };
 
     await database.ref(`users/${userId}`).update(user);
@@ -81,18 +99,10 @@ export default class UserController {
     res.status(200).json(new Response(102, "error", { isSuccessfull: true, users }));
   }
 
-
   static async enrollAdmin(user, organization) {
     // add database
 
     // enroll to Fabric
     await fabricAdmin.enrollAdmin(organization, "admin")
   }
-  static async enrollUser(user, organization) {
-    // add database
-
-    // enroll to Fabric
-    await fabricAdmin.enrollAdmin(organization, user.id)
-  }
-
 }

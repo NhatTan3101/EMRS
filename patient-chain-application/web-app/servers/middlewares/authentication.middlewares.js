@@ -4,10 +4,14 @@ import Response from "../models/response.model.js";
 export const authenticate = async (req, res, next) => {
     try {
         if (req.url !== '/api/user/login' && req.url !== '/api/user/register') {
-            await verifyToken(req.headers?.authentication);
+            const user = await verifyToken(req.headers?.authentication);
+
+            req.locals = {
+                userId: user.uid
+            };
         }
         next();
     } catch (error) {
-        res.status(401).json(new Response(10301, "Authentication !"));
+        res.status(401).json(new Response(10301, error?.message || "Authentication !"));
     }
 }

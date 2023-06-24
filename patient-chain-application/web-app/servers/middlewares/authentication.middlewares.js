@@ -5,9 +5,10 @@ export const authenticate = async (req, res, next) => {
     try {
         if (req.url !== '/api/user/login' && req.url !== '/api/user/register') {
             const user = await verifyToken(req.headers?.authentication);
-
             req.locals = {
-                userId: user.uid
+                ...req.locals,
+                recordId: user?.claims?.recordId,
+                userId: user?.uid
             };
         }
         next();

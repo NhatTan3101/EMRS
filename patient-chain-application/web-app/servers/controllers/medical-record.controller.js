@@ -2,12 +2,13 @@ import { database } from "../databases/firebase.database.js";
 import Response from "../models/response.model.js";
 import fabricDoctor from "../fabric/doctor.fabric.js";
 import crypto from 'crypto';
+import MedicalRecordModel from "../models/medical-record.model.js";
 
 export default class MedicalRecordController {
   static async createRecord(req, res) {
-    // add database
     try {
-      var {
+      const medical = new MedicalRecordModel();
+      const {
         diagnoseDisease,
         symptom,
         treatment,
@@ -20,9 +21,9 @@ export default class MedicalRecordController {
         dayofsurgery,
       } = req.body;
 
-      let { userId } = req.params;
+      const { userId } = req.params;
 
-      var medicalRecord = {
+      const medicalRecord = {
         diagnoseDisease,
         symptom,
         treatment,
@@ -35,52 +36,54 @@ export default class MedicalRecordController {
         dayofsurgery,
       };
 
-      await database.ref(`users/${userId}/medical_record/exams`).push(medicalRecord);
-      // hash data
-      let hashcode = crypto.createHash("sha256").update(JSON.stringify(medicalRecord)).digest("sha256");
-      // // get recordId, identity:userId
-      let recordId = data.key;
       let identity = req.locals.userId;
-      // // add blockchain
-      let dataBC = await fabricDoctor.createRecord(recordId, hashcode, identity);
 
-      res.status(200).json(medicalRecord);
+      // try {
+      //   let hashtoBC = "";
+      
+      // await fabricDoctor.createRecord(recordId, hashtoBC, req.locals.userId);
+      // } catch (error) {
+      //   console.log("error", error);
+      // }
+      
+      let recordId = req.locals.recordId;
+      
+      console.log("from blockchain", recordId, identity);
+      let record = await fabricDoctor.getRecord(recordId, identity);
+      console.log("from blockchain", record?.hashcode);
+
+
+      // let oldMedicalRecord = medical.getRecordByUserId(userId);
+      // let hash = crypto.createHash("sha256").update(JSON.stringify(oldMedicalRecord)).digest("sha256");
+      // if(record?.hashcode === hash || record?.hashcode === ""){
+      // // push new data to firebase
+      // await database.ref(`users/${userId}/medical_record/exams`).push(medicalRecord);
+      // res.status(200).json(medicalRecord);
+      // // get lại data từ firebase để hash
+      // let newMedicalRecord = medical.getRecordByUserId(userId);
+      // let hashtoBC = crypto.createHash("sha256").update(JSON.stringify(newMedicalRecord)).digest("sha256");
+      // // add blockchain
+      //   await fabricDoctor.createRecord(recordId, hashtoBC, identity);
+      // }
     } catch (error) {
-      res.status(500).json(medicalRecord);
+      res.status(500).json(new Response(102, "error", { isSuccessfull: false }));
     }
   }
 
   static async getRecord(req, res) {
-    let { userId } = req.params;
-    const raw = await database.ref(`users/${userId}/medical_records/exams`).once("value");
-    const data = raw.val();
-    let records = [];
+    try {
+      const medical = new MedicalRecordModel();
+      const { userId } = req.params;
+      const records = await medical.getRecordByUserId(userId);
 
-    for (const key in data) {
-      if (data?.[key]) records.push(data?.[key]);
+      res
+        .status(200)
+        .json(new Response(102, "success", { isSuccessfull: true, records }));
+    } catch (error) {
+      res
+        .status(500)
+        .json(new Response(102, error?.message || "Internal server !", { isSuccessfull: false }));
     }
-    res
-      .status(200)
-      .json(new Response(102, "error", { isSuccessfull: true, records }));
+
   }
-
-  static async update(data, identity) {
-    // check
-    // get hashcode from blockchain
-    let record = await fabricDoctor.getRecord(recordId, identity)
-    // add database
-
-    // hash data
-    let hash = "fj0j0ed90qjd9qw0j0q9"
-    // add blockchain
-    let recordId = data.id
-    await fabricDoctor.updateRecord(recordId, hash, identity)
-  }
-
-  // static async get(recordId, identity) {
-  //   // get blockchain
-  //   let record = await fabricDoctor.getRecord(recordId, identity)
-  //   return record
-  // }
-
 }   

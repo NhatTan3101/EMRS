@@ -24,6 +24,7 @@ export default class UserController {
           userId,
           name: result?.name,
           role: result?.role,
+          email: result?.email
         },
       });
     } catch (error) {
@@ -46,16 +47,15 @@ export default class UserController {
           recordId: generateId(),
         }
       };
-      console.log("recordIdddd",user?.medical_record?.recordId);
 
       const data = await createUser(email, password);
 
       await database.ref("users").child(data.uid).update(user);
 
+      res.status(200).json(new Response(102, "Successfully", { isSuccessfull: true }));
       
       await fabricAdmin.registerUser(user.role, data.uid);
       
-      res.status(200).json(new Response(102, "Successfully", { isSuccessfull: true }));
     } catch (error) {
       res.status(500).json(new Response(102, error?.message || "Internal server !", { isSuccessfull: false }));
     }
